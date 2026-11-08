@@ -1,56 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import React, { createContext, useState, useContext } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import HomeTab from "./HomeTab";
+import SettingsTab from "./SettingsTab";
 
-export default function App() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+export const AppContext = createContext();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10');
-        const json = await response.json();
-        setData(json);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+export function AppProvider({ children }) {
+  const [theme, setTheme] = useState("light");
+  const [username, setUsername] = useState("Guest");
+  const [saving, setSaving] = useState(false);
 
-    fetchData();
-  }, []);
+  const updateUsername = (name) => {
+    setSaving(true);
+    setTimeout(() => {
+      setUsername(name);
+      setSaving(false);
+    }, 1000);
+  };
 
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.center}>
-        <ActivityIndicator size="large" />
-        <Text>Loading...</Text>
-      </SafeAreaView>
-    );
-  }
+  const toggleTheme = () => {
+    setTheme((t) => (t === "light" ? "dark" : "light"));
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Posts</Text>
-      <FlatList
-        data={data}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text>{item.body}</Text>
-          </View>
-        )}
-      />
-    </SafeAreaView>
+    <AppContext.Provider
+      value={{ theme, setTheme, toggleTheme, username, setUsername, updateUsername, saving }}
+    >
+      {children}
+    </AppContext.Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  header: { fontSize: 20, fontWeight: 'bold', marginBottom: 12 },
-  item: { marginBottom: 12, padding: 10, backgroundColor: '#f2f2f2', borderRadius: 6 },
-  title: { fontWeight: '600', marginBottom: 4 },
-});
+const Tab = createBottomTabNavigator();
+
+export default function App() {
+  return (
+    <AppProvider>
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Tab.Screen name="Home" component={HomeTab} />
+          <Tab.Screen name="Settings" component={SettingsTab} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </AppProvider>
+  );
+}
