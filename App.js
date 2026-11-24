@@ -6,7 +6,7 @@ import SettingsTab from "./SettingsTab";
 
 export const AppContext = createContext();
 
-export function AppProvider({ Children }) {
+export function AppProvider({ Maiden }) {
   const [theme, setTheme] = useState("light");
   const [username, setUsername] = useState("Guest");
   const [saving, setSaving] = useState(false);
