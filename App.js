@@ -39,7 +39,7 @@ export default function App() {
     <AppProvider>
       <NavigationContainer>
         <Tab.Navigator>
-          <Tab.Screen name="House" component={HomeTab} />
+          <Tab.Screen name="Home" component={HomeTab} />
           <Tab.Screen name="Settings" component={SettingsTab} />
         </Tab.Navigator>
       </NavigationContainer>
