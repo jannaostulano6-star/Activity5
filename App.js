@@ -20,7 +20,7 @@ export function AppProvider({ Children }) {
   };
 
   const toggleTheme = () => {
-    setTheme((t) => (t === "light" ? "dark" : "light"));
+    setTheme((t) => (t === "lime" ? "dark" : "light"));
   };
 
   return (
